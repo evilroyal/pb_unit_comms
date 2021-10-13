@@ -1,13 +1,15 @@
 #include <Wire.h>
 #include <stdint.h>
 
-enum state = {WAITING_COMMAND,WAITING_COMMAND_DATA}
+enum RecvState {WAITING_COMMAND,WAITING_COMMAND_DATA};
+enum RecvState state;
 uint8_t valve;
 
 
 void setup() {
-  for(int i = 40; i<51;i++){
+  for(int i = 40; i <= 53;i++){
      pinMode(i, OUTPUT);
+     digitalWrite(i, HIGH);
   }
   Wire.begin(0x20);        // join i2c bus (address optional for master)
   Serial.begin(9600);  // start serial for output
@@ -17,6 +19,7 @@ void setup() {
   
 }
 
+void loop() {}
 
 
 void onReceiveCommand(){
@@ -31,16 +34,23 @@ void onReceiveCommand(){
       state = WAITING_COMMAND_DATA;
       break;
       
-    case WATING_COMMAND_DATA:
+    case WAITING_COMMAND_DATA:
       if(octet){
-        if(valve >= 40 && valve<= 51){
+        if(valve >= 40 && valve<= 53) {
           //True => >0 => ouvrir la valve
           //Sanity check on the pin value
           digitalWrite(valve,HIGH);
+          Serial.print(valve);
+          Serial.print(octet);
+          Serial.print("\n");
         }
-      }
-      else if(valve >= 40 && valve<= 51)){
+      } else if(valve >= 40 && valve<= 53){
         digitalWrite(valve,LOW);
+        Serial.print(valve);
+        Serial.print(octet);
+        Serial.print("\n");
       }
+      state = WAITING_COMMAND;
+      break;
   }
 }
