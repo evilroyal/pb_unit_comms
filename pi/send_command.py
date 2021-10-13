@@ -14,5 +14,5 @@ if __name__ == "__main__":
     register = int(sys.argv[1])
     value = int(sys.argv[2])
 
-    bus.write_byte(0x20, register & 0xff)
-    bus.write_byte(0x20, value & 0xff)
+    bus.write_byte(ARDUINO_I2C_ADDR, register & 0xff)
+    bus.write_byte(ARDUINO_I2C_ADDR, value & 0xff)
